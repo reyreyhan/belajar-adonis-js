@@ -33,7 +33,19 @@ Route.group(() => {
     .middleware(['auth:jwt'])
 
 Route.group(() => {
+    Route.get('/users_to_follow', 'UserController.userToFollow')
+    Route.post('/follow/:id', 'UserController.follow')
+})
+    .prefix('users')
+    .middleware(['auth:jwt'])
+
+Route.group(() => {
     Route.post('/', 'TweetController.tweet')
+    Route.get('/all', 'TweetController.all')
+    Route.get('/:id', 'TweetController.show')
+    Route.post('/:id/reply', 'TweetController.reply')
+    Route.post('/:id/like', 'TweetController.like')
+    Route.delete('/:id/unlike', 'TweetController.unlike')
 })
     .prefix('tweet')
     .middleware(['auth:jwt'])

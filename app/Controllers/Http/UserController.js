@@ -146,6 +146,32 @@ class UserController {
             })
         }
     }
+
+    async userToFollow({ params, auth, response }) {
+        const user = auth.current.user
+        const userAlreadyFollowing = await user.following().ids()
+
+        const userToFollow = await User.query()
+            .whereNot('id', user.id)
+            .whereNotIn('id', userAlreadyFollowing)
+            .pick(3)
+
+        return response.json({
+            status: 'success',
+            data: userToFollow
+        })
+    }
+
+    async follow({ request, auth, response, params }) {
+        const user = auth.current.user
+        await user.following().attach(request.input('user_id'))
+        await user.followers().attach(user.id)
+
+        return response.json({
+            status: 'success',
+            data: user
+        })
+    }
 }
 
 module.exports = UserController
