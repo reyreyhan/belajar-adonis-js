@@ -35,6 +35,7 @@ Route.group(() => {
 Route.group(() => {
     Route.get('/users_to_follow', 'UserController.userToFollow')
     Route.post('/follow/:id', 'UserController.follow')
+    Route.delete('/unfollow/:id', 'UserController.unfollow')
 })
     .prefix('users')
     .middleware(['auth:jwt'])

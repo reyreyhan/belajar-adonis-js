@@ -164,12 +164,48 @@ class UserController {
 
     async follow({ request, auth, response, params }) {
         const user = auth.current.user
-        await user.following().attach(request.input('user_id'))
-        await user.followers().attach(user.id)
+
+        const findUser = await User.find(params.id)
+
+        if (findUser == null) {
+          return response.status(404).json({
+            status: 'error',
+            massage: 'User not found'
+          })
+        }
+
+        /*const cekUser = await User.query()
+            .where('id', params.id)
+            .with('followers')
+            .fetch()
+
+        console.log(cekUser)*/
+
+        await user.following().attach(params.id)
 
         return response.json({
             status: 'success',
             data: user
+        })
+    }
+
+    async unfollow({ reqesut, auth, response, params }) {
+        const user = auth.current.user
+
+        const findUser = await User.find(params.id)
+
+        if (findUser == null) {
+          return response.status(404).json({
+            status: 'error',
+            massage: 'User not found'
+          })
+        }
+
+        await user.following().detach(params.id)
+
+        return response.json({
+            status: 'success',
+            data: user,
         })
     }
 }
